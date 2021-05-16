@@ -8,6 +8,8 @@ FROM tensorflow/tensorflow:2.4.1-gpu
 RUN mkdir -p /usr/src/app 
 WORKDIR /usr/src/app 
 
+# https://github.com/openai/roboschool/issues/209 ffmpeg replacing libav-tools
+
 # Various Python and C/build deps
 RUN apt-get update && apt-get install -y \ 
     wget \
@@ -19,7 +21,7 @@ RUN apt-get update && apt-get install -y \
     python-dev \ 
     python-opencv \ 
     libopencv-dev \ 
-    libav-tools  \ 
+    ffmpeg \ 
     libjpeg-dev \ 
     libpng-dev \ 
     libtiff-dev \ 
