@@ -25,7 +25,15 @@ RUN apt-get update && apt-get install -y \
     libjpeg-dev \ 
     libpng-dev \ 
     libtiff-dev \ 
-    libjasper-dev \ 
+
+# https://www.pyimagesearch.com/2018/05/28/ubuntu-18-04-how-to-install-opencv/ fix for missing libjasper
+
+RUN add-apt-repository "deb http://security.ubuntu.com/ubuntu xenial-security main"
+RUN apt update
+RUN apt install libjasper1 libjasper-dev
+
+# continue with prereq install list
+RUN apt-get install -y \ 
     libgtk2.0-dev \ 
     python-numpy \ 
     python-pycurl \ 
