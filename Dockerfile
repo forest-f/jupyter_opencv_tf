@@ -1,57 +1,62 @@
+FROM tensorflow/tensorflow:2.4.1-gpu
 
-FROM python:3.9
+# RUN pip install --upgrade pip
+# RUN pip install pandas
 
+#https://stackoverflow.com/questions/36862589/install-opencv-in-a-docker-container
 
-#we do all of this to get opencv
-#copied from https://github.com/janza/docker-python3-opencv/blob/master/Dockerfile
-WORKDIR /opt/build
+RUN mkdir -p /usr/src/app 
+WORKDIR /usr/src/app 
 
-ENV OPENCV_VERSION="4.5.1"
+# Various Python and C/build deps
+RUN apt-get update && apt-get install -y \ 
+    wget \
+    build-essential \ 
+    cmake \ 
+    git \
+    unzip \ 
+    pkg-config \
+    python-dev \ 
+    python-opencv \ 
+    libopencv-dev \ 
+    libav-tools  \ 
+    libjpeg-dev \ 
+    libpng-dev \ 
+    libtiff-dev \ 
+    libjasper-dev \ 
+    libgtk2.0-dev \ 
+    python-numpy \ 
+    python-pycurl \ 
+    libatlas-base-dev \
+    gfortran \
+    webp \ 
+    python-opencv \ 
+    qt5-default \
+    libvtk6-dev \ 
+    zlib1g-dev 
 
-RUN apt-get -qq update \
-    && apt-get -qq install -y --no-install-recommends \
-        build-essential \
-        cmake \
-        git \
-        wget \
-        unzip \
-        yasm \
-        pkg-config \
-        libswscale-dev \
-        libtbb2 \
-        libtbb-dev \
-        libjpeg-dev \
-        libpng-dev \
-        libtiff-dev \
-        libopenjp2-7-dev \
-        libavformat-dev \
-        libpq-dev \
-    && pip install numpy \
-    && wget -q https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip -O opencv.zip \
-    && unzip -qq opencv.zip -d /opt \
-    && rm -rf opencv.zip \
-    && cmake \
-        -D BUILD_TIFF=ON \
-        -D BUILD_opencv_java=OFF \
-        -D WITH_CUDA=OFF \
-        -D WITH_OPENGL=ON \
-        -D WITH_OPENCL=ON \
-        -D WITH_IPP=ON \
-        -D WITH_TBB=ON \
-        -D WITH_EIGEN=ON \
-        -D WITH_V4L=ON \
-        -D BUILD_TESTS=OFF \
-        -D BUILD_PERF_TESTS=OFF \
-        -D CMAKE_BUILD_TYPE=RELEASE \
-        -D CMAKE_INSTALL_PREFIX=$(python3.9 -c "import sys; print(sys.prefix)") \
-        -D PYTHON_EXECUTABLE=$(which python3.9) \
-        -D PYTHON_INCLUDE_DIR=$(python3.9 -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())") \
-        -D PYTHON_PACKAGES_PATH=$(python3.9 -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())") \
-        /opt/opencv-${OPENCV_VERSION} \
-    && make -j$(nproc) \
-    && make install \
-    && rm -rf /opt/build/* \
-    && rm -rf /opt/opencv-${OPENCV_VERSION} \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get -qq autoremove \
-    && apt-get -qq clean
+# Install Open CV - Warning, this takes absolutely forever
+RUN mkdir -p ~/opencv cd ~/opencv && \
+    wget https://github.com/opencv/opencv/archive/3.0.0.zip && \
+    unzip 3.0.0.zip && \
+    rm 3.0.0.zip && \
+    mv opencv-3.0.0 OpenCV && \
+    cd OpenCV && \
+    mkdir build && \ 
+    cd build && \
+    cmake \
+    -DWITH_QT=ON \ 
+    -DWITH_OPENGL=ON \ 
+    -DFORCE_VTK=ON \
+    -DWITH_TBB=ON \
+    -DWITH_GDAL=ON \
+    -DWITH_XINE=ON \
+    -DBUILD_EXAMPLES=ON .. && \
+    make -j4 && \
+    make install && \ 
+    ldconfig
+
+COPY requirements.txt /usr/src/app/
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . /usr/src/app 
