@@ -61,7 +61,7 @@ RUN mkdir -p ~/opencv cd ~/opencv && \
     mkdir build && \ 
     cd build && \
     cmake \
-    -DCMAKE_LIBRARY_PATH=/usr/local/cuda/lib64/stubs
+    -DCMAKE_LIBRARY_PATH=/usr/local/cuda/lib64/stubs \ 
     -DWITH_QT=ON \ 
     -DWITH_OPENGL=ON \ 
     -DFORCE_VTK=ON \
