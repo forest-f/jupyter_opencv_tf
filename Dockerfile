@@ -1,5 +1,10 @@
 FROM tensorflow/tensorflow:2.4.1-gpu
 
+#was hanging up while configuring tz data, this should fix that (https://grigorkh.medium.com/fix-tzdata-hangs-docker-image-build-cdb52cc3360d)
+
+ENV TZ=Asia/Dubai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 # RUN pip install --upgrade pip
 # RUN pip install pandas
 
