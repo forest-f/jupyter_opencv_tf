@@ -51,6 +51,7 @@ RUN apt-get install -y \
     zlib1g-dev 
 
 # Install Open CV - Warning, this takes absolutely forever
+# adding DCMAKE_LIBRARY_PATH from https://github.com/opencv/opencv/issues/6577 to fix library errors
 RUN mkdir -p ~/opencv cd ~/opencv && \
     wget https://github.com/opencv/opencv/archive/3.0.0.zip && \
     unzip 3.0.0.zip && \
@@ -60,6 +61,7 @@ RUN mkdir -p ~/opencv cd ~/opencv && \
     mkdir build && \ 
     cd build && \
     cmake \
+    -DCMAKE_LIBRARY_PATH=/usr/local/cuda/lib64/stubs
     -DWITH_QT=ON \ 
     -DWITH_OPENGL=ON \ 
     -DFORCE_VTK=ON \
