@@ -53,10 +53,10 @@ RUN apt-get install -y \
 # Install Open CV - Warning, this takes absolutely forever
 # adding DCMAKE_LIBRARY_PATH from https://github.com/opencv/opencv/issues/6577 to fix library errors
 RUN mkdir -p ~/opencv cd ~/opencv && \
-    wget https://github.com/opencv/opencv/archive/3.0.0.zip && \
-    unzip 3.0.0.zip && \
-    rm 3.0.0.zip && \
-    mv opencv-3.0.0 OpenCV && \
+    wget https://github.com/opencv/opencv/archive/4.5.1.zip && \
+    unzip 4.5.1.zip && \
+    rm 4.5.1.zip && \
+    mv opencv-4.5.1 OpenCV && \
     cd OpenCV && \
     mkdir build && \ 
     cd build && \
