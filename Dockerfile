@@ -5,9 +5,6 @@ FROM tensorflow/tensorflow:2.4.1-gpu
 ENV TZ=Asia/Dubai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# RUN pip install --upgrade pip
-# RUN pip install pandas
-
 #https://stackoverflow.com/questions/36862589/install-opencv-in-a-docker-container
 
 RUN mkdir -p /usr/src/app 
@@ -72,5 +69,12 @@ RUN mkdir -p ~/opencv cd ~/opencv && \
     make -j4 && \
     make install && \ 
     ldconfig
+
+
+RUN pip install --upgrade pip
+RUN pip install pydicom
+RUN pip install biosppy
+RUN python -m pip install -U matplotlib
+RUN pip install ipyevents
 
 COPY . /usr/src/app 
